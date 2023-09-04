@@ -60,3 +60,6 @@ td,tr,th,table{
   background-color: green !important;
 }
 
+.selected{
+  background-color: green !important;
+}

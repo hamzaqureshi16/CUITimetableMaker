@@ -37,7 +37,11 @@ function App() {
         end: `${startTime.getHours() + 1}:${startTime.getMinutes() + 30}`
       }
       slt.push(slot)
-      startTime.setMinutes(startTime.getMinutes() + 90)
+      startTime.setMinutes(startTime.getMinutes() + 100)
+
+      if(slot.end === '12:50'){
+        startTime.setMinutes(startTime.getMinutes() + 40)
+      }
     }
     setSlots(slt)
   }
@@ -50,6 +54,7 @@ function App() {
     setClasses(temp);
 
     setCourse('')
+    setdata([])
     let cells = document.querySelectorAll('.cellSelect')
     cells.forEach(cell => {
       cell.classList.remove('selected')
@@ -66,7 +71,20 @@ function App() {
     const slotIndex = e.target.cellIndex - 1;
     e.target.classList.toggle('selected')
     let temp = data;
-    temp.push({day: dayIndex, slot: slotIndex})
+    let toPush = {day: dayIndex, slot: slotIndex}
+    let found = false;
+    temp.forEach((item, index) => {
+      if(item.day === dayIndex && item.slot === slotIndex){
+        found = true;
+        temp.splice(index, 1)
+      }
+    })
+
+      if(!found){
+        temp.push(toPush)
+      }
+    // temp.push({day: dayIndex, slot: slotIndex})
+    console.log(temp)
     setdata(temp) 
     console.log(`Day: ${dayIndex}, Slot: ${slotIndex}`);
 
@@ -82,13 +100,14 @@ function App() {
     const row = e.target.parentNode.rowIndex - 1;
     const column = e.target.cellIndex - 1;
 
-    //find data in classes where data.day = row and data.slot = column
+    
+
     let temp = classes;
-    let found = false;
     temp.forEach((item, index) => {
       item.data.forEach((d, i) => {
         if(d.day === row && d.slot === column){
-          found = true;
+          console.log(item)
+          e.target.classList.toggle('selected')
           e.target.classList.add('selected')
           e.target.innerHTML = item.course
         }
@@ -100,6 +119,7 @@ function App() {
 
   return (
     <div className="App">
+      <h2>Hover over the cells of this table to see your added classes</h2>
       <table >
         <thead>
           <tr style={{ 
@@ -123,7 +143,6 @@ function App() {
               return (
                 <tr key={dayindex}>
                   <td>{day}</td>
-                  <td onMouseOver={addClass}></td>
                   <td onMouseOver={addClass}></td>
                   <td onMouseOver={addClass}></td>
                   <td onMouseOver={addClass}></td>
@@ -171,7 +190,6 @@ function App() {
               return (
                 <tr key={index}>
                   <td>{day}</td>
-                  <td onClick={getDayandSlot} className='cellSelect'></td>
                   <td onClick={getDayandSlot} className='cellSelect'></td>
                   <td onClick={getDayandSlot} className='cellSelect'></td>
                   <td onClick={getDayandSlot} className='cellSelect'></td>
